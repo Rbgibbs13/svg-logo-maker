@@ -21,13 +21,13 @@ inquirer.prompt([
     {
         name: "color",
         type: "list",
-        message: "Select Logo Color",
+        message: "Select Logo Background Color",
         choices: ["white", "black", "blue", "red", "green", "yellow", "transparent"],
     },
     {
-        name: "bordercolor",
+        name: "borderColor",
         type: "list",
-        message: "Select Border Color",
+        message: "Select Border and Text Color",
         choices: ["white", "black", "blue", "red", "green", "yellow", "transparent"],
     },
     {
@@ -39,13 +39,13 @@ inquirer.prompt([
     {
         name: "xOffset",
         type: "number",
-        message: "X Offset of SVG Logo (X Margin for your logo)",
+        message: "X Offset of Text Logo (X Margin for your logo)",
         default: "10",
     },
     {
         name: "yOffset",
         type: "number",
-        message: "Y Offset of SVG Logo (Y Margin for your logo)",
+        message: "Y Offset of Text Logo (Y Margin for your logo)",
         default: "10",
     },
     {
@@ -74,23 +74,25 @@ inquirer.prompt([
     // }
 ]).then((response) => {
     //Get Inputs
-    let {title, shape, color, bordercolor, strokeWidth, xOffset, yOffset, saveName} = response;
+    let {title, shape, saveName} = response;
     
     //sanitize this
-    title = title.substring(0,3);
+    title = title.substring(0,3).toUpperCase();
     saveFileName = saveName + "-";
+    response.title = title;
+    console.log(response.title);
     // let nShape = new Shape.Shape(color, bordercolor, strokeWidth, xOffset, yOffset);
 
     //Generate SVG shape
     switch(shape) {
         case "Circle":
-            console.log("Circle Selected");
+            console.log("Circle Selected" + response.borderColor);
             generateCircle(response);
             return;
 
         case "Rectangle":
             console.log("Rectangle Selected");
-            generateRect();
+            generateRect(response);
     }
 });
 
@@ -102,6 +104,34 @@ const SaveSVGtoFile = (svg) => {
     fs.writeFile(`./examples/${fileName}.svg`, `${svg}`, (error) => 
         error ? console.error(error) : console.log("SVG Saved")
     );
+}
+
+const generateRect = (data) => {
+    //roundness : sizeX : sizeY 
+    inquirer.prompt([
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "200",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
+            default: "200",
+        },
+        {
+            name: "roundness",
+            type: "number",
+            message: "Input a border radius (Edge Roundness)",
+            default: "10",
+        }
+    ]).then((response) => {
+        let {xSize, ySize, roundness} = response;
+        let rectSVG = new Shape.Rectangle(xSize, ySize, roundness, data);
+
+    });
 }
 
 const generateCircle = (data) => {
@@ -121,26 +151,3 @@ const generateCircle = (data) => {
         SaveSVGtoFile(svg);
     });
 };
-
-const generateRect = (data) => {
-    //xOffset : yOffset : roundness : sizeX : sizeY : color : 
-    inquirer.prompt([
-        {
-            name: "xSize",
-            type: "number",
-            message: "Width of SVG Logo",
-            default: "200",
-        },
-        {
-            name: "ySize",
-            type: "number",
-            message: "Height of SVG Logo",
-            default: "200",
-        },
-    ]).then((response) => {
-        let {xSize, ySize} = response;
-        let rectSVG = new Shape.Rectangle(xSize, ySize);
-
-    });
-}
-
