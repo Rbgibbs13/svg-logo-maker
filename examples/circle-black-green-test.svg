@@ -1,0 +1,9 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <circle cx="200" cy="200" r="160" fill="black" stroke="green" stroke-width="10"/>
+    <text><tspan font-weight="bold" fill="green" x="100" y="225">GBG</tspan></text>
+    <style>
+        text{
+                font: 80px Verdana, Helvetica, Arial, sans-serif;
+            }
+    </style>
+</svg>
