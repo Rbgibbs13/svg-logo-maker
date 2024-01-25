@@ -9,14 +9,14 @@ inquirer.prompt([
     {
         name: "title",
         type: "input",
-        message: "SVG Logo Title - 3 characters Max",
+        message: "SVG Logo Text - 3 letter max",
         //Add filter here
     },
     {
         name: "shape",
         type: "list",
         message: "Select Logo Shape",
-        choices: ["Rectangle", "Circle", "Ellipse", "Triangle", "Square"],
+        choices: ["Rectangle", "Circle", "Ellipse", "Triangle", "Square", "Star"],
     },
     {
         name: "color",
@@ -37,71 +37,54 @@ inquirer.prompt([
         default: "5",
     },
     {
-        name: "xOffset",
-        type: "number",
-        message: "X Offset of Text Logo (X Margin for your logo)",
-        default: "10",
-    },
-    {
-        name: "yOffset",
-        type: "number",
-        message: "Y Offset of Text Logo (Y Margin for your logo)",
-        default: "10",
-    },
-    {
         name: "saveName",
         type: "input",
-        message: "Name of File",
+        message: "Name for file",
         default: "svg-test",
     }
-    // {
-    //     name: "xSize",
-    //     type: "number",
-    //     message: "Width of SVG Logo",
-    //     default: "200",
-    // },
-    // {
-    //     name: "ySize",
-    //     type: "number",
-    //     message: "Height of SVG Logo",
-    //     default: "200",
-    // },
-    // {
-    //     name: "roundness",
-    //     type: "number",
-    //     message: "Input a border radius (Edge Roundness)",
-    //     default: "10",
-    // }
 ]).then((response) => {
     //Get Inputs
     let {title, shape, saveName} = response;
     
-    //sanitize this
+    //sanitize
     title = title.substring(0,3).toUpperCase();
     saveFileName = saveName + "-";
     response.title = title;
-    console.log(response.title);
-    // let nShape = new Shape.Shape(color, bordercolor, strokeWidth, xOffset, yOffset);
 
     //Generate SVG shape
     switch(shape) {
         case "Circle":
-            console.log("Circle Selected" + response.borderColor);
             generateCircle(response);
-            return;
+            break;
+
+        case "Ellipse":
+            generateEllipse(response);
+            break;
 
         case "Rectangle":
-            console.log("Rectangle Selected");
             generateRect(response);
+            break;
+
+        case "Triangle":
+            generateTriangle(response);
+            break;
+
+        case "Square":
+            generateSquare(response);
+            break;
+
+        case "Star":
+            generateStar(response);
+            break;
+
+        default:
+            generateSquare(response);
     }
 });
 
  //Save To File
-const SaveSVGtoFile = (svg) => {
-    //let svg = `${title} ${shape} ${color}`;
-    let rand = Math.floor(Math.random() * 1000);
-    let fileName = saveFileName + rand;
-    fs.writeFile(`./examples/${fileName}.svg`, `${svg}`, (error) => 
+const SaveSVGtoFile = (svg, fileName) => {
+    fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
         error ? console.error(error) : console.log("SVG Saved")
     );
 }
@@ -113,7 +96,109 @@ const generateRect = (data) => {
             name: "xSize",
             type: "number",
             message: "Width of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
             default: "200",
+        },
+        {
+            name: "xOffset",
+            type: "number",
+            message: "X Offset of Text (X Margin for your logo)",
+            default: "10",
+        },
+        {
+            name: "yOffset",
+            type: "number",
+            message: "Y Offset of Text (Y Margin for your logo)",
+            default: "10",
+        },
+        {
+            name: "roundness",
+            type: "number",
+            message: "Border radius (Edge Roundness)",
+            default: "10",
+        }
+    ]).then((response) => {
+        let {xSize, ySize, xOffset, yOffset, roundness} = response;
+        let rectSVG = new Shape.Rectangle(xSize, ySize, xOffset, yOffset, roundness, data);
+        let svg = rectSVG.convertToSVG();
+        SaveSVGtoFile(svg);
+    });
+};
+
+const generateTriangle = (data) => {
+    inquirer.prompt([
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
+            default: "400",
+        },
+    ]).then((response) => {
+        let {xSize, ySize} = response;
+        let triSVG = new Shape.Triangle(xSize, ySize, data);
+        let svg = triSVG.convertToSVG();
+        SaveSVGtoFile(svg);
+    });
+};
+
+const generateSquare = (data) => {
+    inquirer.prompt([
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
+            default: "200",
+        },
+        {
+            name: "xOffset",
+            type: "number",
+            message: "X Offset of Text (X Margin for your logo)",
+            default: "10",
+        },
+        {
+            name: "yOffset",
+            type: "number",
+            message: "Y Offset of Text (Y Margin for your logo)",
+            default: "10",
+        },
+        {
+            name: "roundness",
+            type: "number",
+            message: "Border radius (Edge Roundness)",
+            default: "50",
+        }
+    ]).then((response) => {
+        let {xSize, ySize, xOffset, yOffset, roundness} = response;
+        let sqSVG = new Shape.Square(xSize, ySize, xOffset, yOffset, roundness, data);
+        let svg = sqSVG.convertToSVG();
+        SaveSVGtoFile(svg);
+    });
+};
+
+const generateEllipse = (data) => {
+    inquirer.prompt([
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "400",
         },
         {
             name: "ySize",
@@ -124,15 +209,16 @@ const generateRect = (data) => {
         {
             name: "roundness",
             type: "number",
-            message: "Input a border radius (Edge Roundness)",
-            default: "10",
+            message: "Border radius (Edge Roundness)",
+            default: "50",
         }
     ]).then((response) => {
         let {xSize, ySize, roundness} = response;
-        let rectSVG = new Shape.Rectangle(xSize, ySize, roundness, data);
-
+        let ellipseSVG = new Shape.Ellipse(xSize, ySize, roundness, data);
+        let svg = ellipseSVG.convertToSVG();
+        SaveSVGtoFile(svg);
     });
-}
+};
 
 const generateCircle = (data) => {
     //radius
@@ -147,7 +233,17 @@ const generateCircle = (data) => {
         let radius = response.radius;
         let circleSVG = new Shape.Circle(radius, data);
         let svg = circleSVG.convertToSVG();
-        console.log(svg);
+        SaveSVGtoFile(svg);
+    });
+};
+
+const generateStar = (data) => {
+    inquirer.prompt([
+
+    ]).then((response) => {
+        let radius = response.radius;
+        let starSVG = new Shape.Star(radius, data);
+        let svg = starSVG.convertToSVG();
         SaveSVGtoFile(svg);
     });
 };
