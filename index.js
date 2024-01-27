@@ -1,6 +1,6 @@
 const inquirer = require("./node_modules/inquirer");
-const fs = require("fs");
 const Shape = require("./lib/shapes.js");
+const Save = require("./lib/save.js");
 let saveFileName = "";
 
 // async function titleFilter(title) {
@@ -37,13 +37,13 @@ inquirer.prompt([
         name: "color",
         type: "list",
         message: "Select Logo Background Color",
-        choices: ["white", "black", "blue", "red", "green", "yellow", "transparent"],
+        choices: ["white", "black", "blue", "red", "green", "yellow", "purple", "transparent"],
     },
     {
         name: "borderColor",
         type: "list",
         message: "Select Border and Text Color",
-        choices: ["white", "black", "blue", "red", "green", "yellow"],
+        choices: ["white", "black", "blue", "red", "green", "yellow", "purple"],
     },
     {
         name: "strokeWidth",
@@ -65,7 +65,6 @@ inquirer.prompt([
     title = title.substring(0,3).toUpperCase();
     saveFileName = saveName + "-logo";
     response.title = title;
-    console.log(response.title + " :  " + title);
 
     //Generate SVG shape
     switch(shape) {
@@ -99,11 +98,11 @@ inquirer.prompt([
 });
 
  //Save To File
-const SaveSVGtoFile = (svg) => {
-    fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
-        error ? console.error(error) : console.log("SVG Saved")
-    );
-};
+// const SaveSVGtoFile = (svg) => {
+//     fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
+//         error ? console.error(error) : console.log("SVG Saved")
+//     );
+// };
 
 const generateRect = (data) => {
     //roundness : sizeX : sizeY 
@@ -139,10 +138,10 @@ const generateRect = (data) => {
             default: "10",
         }
     ]).then((response) => {
-        let {xSize, ySize, xOffset, yOffset, roundness} = response;
-        let rectSVG = new Shape.Rectangle(xSize, ySize, xOffset, yOffset, roundness, data);
-        let svg = rectSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const {xSize, ySize, xOffset, yOffset, roundness} = response;
+        const rectSVG = new Shape.Rectangle(xSize, ySize, xOffset, yOffset, roundness, data);
+        const svg = rectSVG.convertToSVG();
+        Save.SaveSVGtoFile(saveFileName, svg);
     });
 };
 
@@ -161,10 +160,10 @@ const generateTriangle = (data) => {
             default: "400",
         },
     ]).then((response) => {
-        let {xSize, ySize} = response;
-        let triSVG = new Shape.Triangle(xSize, ySize, data);
-        let svg = triSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const {xSize, ySize} = response;
+        const triSVG = new Shape.Triangle(xSize, ySize, data);
+        const svg = triSVG.convertToSVG();
+        Save.SaveSVGtoFile(saveFileName, svg);
     });
 };
 
@@ -195,10 +194,10 @@ const generateSquare = (data) => {
             default: "50",
         }
     ]).then((response) => {
-        let {size, xOffset, yOffset, roundness} = response;
-        let sqSVG = new Shape.Square(size, xOffset, yOffset, roundness, data);
-        let svg = sqSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const {size, xOffset, yOffset, roundness} = response;
+        const sqSVG = new Shape.Square(size, xOffset, yOffset, roundness, data);
+        const svg = sqSVG.convertToSVG();
+        Save.SaveSVGtoFile(saveFileName, svg);
     });
 };
 
@@ -217,10 +216,10 @@ const generateEllipse = (data) => {
             default: "200",
         }
     ]).then((response) => {
-        let {xSize, ySize} = response;
-        let ellipseSVG = new Shape.Ellipse(xSize, ySize, data);
-        let svg = ellipseSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const {xSize, ySize} = response;
+        const ellipseSVG = new Shape.Ellipse(xSize, ySize, data);
+        const svg = ellipseSVG.convertToSVG();
+        Save.SaveSVGtoFile(saveFileName, svg);
     });
 };
 
@@ -234,10 +233,10 @@ const generateCircle = (data) => {
             default: "400",
         },
     ]).then((response) => {
-        let radius = response.radius;
-        let circleSVG = new Shape.Circle(radius, data);
-        let svg = circleSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const radius = response.radius;
+        const circleSVG = new Shape.Circle(radius, data);
+        const svg = circleSVG.convertToSVG();
+        Save.SaveSVGtoFile(saveFileName, svg);
     });
 };
 
@@ -254,11 +253,17 @@ const generateStar = (data) => {
             type: "number",
             message: "Height of SVG Logo",
             default: "400",
-        }
+        },
+        {
+            name: "fillrule",
+            type: "list",
+            message: "Select fill type",
+            choices: ["nonzero", "evenodd"],
+        },
     ]).then((response) => {
-        let {xSize, ySize} = response.radius;
-        let starSVG = new Shape.Star(xSize, ySize, data);
-        let svg = starSVG.convertToSVG();
-        SaveSVGtoFile(svg);
+        const {xSize, ySize, fillrule} = response;
+        const starSVG = new Shape.Star(xSize, ySize, fillrule, data);
+        const svg = starSVG.convertToSVG();
+        Save(saveFileName, svg);
     });
 };
