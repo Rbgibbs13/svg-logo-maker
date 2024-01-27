@@ -83,7 +83,7 @@ inquirer.prompt([
 });
 
  //Save To File
-const SaveSVGtoFile = (svg, fileName) => {
+const SaveSVGtoFile = (svg) => {
     fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
         error ? console.error(error) : console.log("SVG Saved")
     );
@@ -227,10 +227,21 @@ const generateCircle = (data) => {
 
 const generateStar = (data) => {
     inquirer.prompt([
-
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
+            default: "400",
+        }
     ]).then((response) => {
-        let radius = response.radius;
-        let starSVG = new Shape.Star(radius, data);
+        let {xSize, ySize} = response.radius;
+        let starSVG = new Shape.Star(xSize, ySize, data);
         let svg = starSVG.convertToSVG();
         SaveSVGtoFile(svg);
     });
