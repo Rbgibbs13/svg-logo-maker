@@ -1,9 +1,23 @@
 const inquirer = require("./node_modules/inquirer");
 const fs = require("fs");
 const Shape = require("./lib/shapes.js");
-const Circle = require("./lib/shapes.js");
-
 let saveFileName = "";
+
+// async function titleFilter(title) {
+//     var done = this.async;
+//     setTimeout(function() {
+//         if(title.length >= 3) {
+//             title = title.substring(0,3).toUpperCase();
+//             console.warn("Filter Working");
+//             done("Max length reached");
+//             return;
+//         }
+//         console.warn("Filter Timed Out");
+//         done(null, true);
+//     }, 3000);
+    
+//     console.warn("Filter Working");
+// };
 
 inquirer.prompt([
     {
@@ -11,6 +25,7 @@ inquirer.prompt([
         type: "input",
         message: "SVG Logo Text - 3 letter max",
         //Add filter here
+        //filter: titleFilter(this.title),
     },
     {
         name: "shape",
@@ -48,8 +63,9 @@ inquirer.prompt([
     
     //sanitize
     title = title.substring(0,3).toUpperCase();
-    saveFileName = saveName;
+    saveFileName = saveName + "-logo";
     response.title = title;
+    console.log(response.title + " :  " + title);
 
     //Generate SVG shape
     switch(shape) {
@@ -87,7 +103,7 @@ const SaveSVGtoFile = (svg) => {
     fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
         error ? console.error(error) : console.log("SVG Saved")
     );
-}
+};
 
 const generateRect = (data) => {
     //roundness : sizeX : sizeY 
