@@ -26,7 +26,6 @@ inquirer.prompt([
         default: "#1D428A",
         filter: (result) => {
             if(result[0] == "#") {
-                console.log(result.substring(0,7));
                 return result.substring(0,7).toUpperCase();
             } else {
                 return result.toLowerCase();
@@ -40,7 +39,6 @@ inquirer.prompt([
         default: "#1D428A",
         filter: (result) => {
             if(result[0] == "#") {
-                console.log(result.substring(0,7));
                 return result.substring(0,7).toUpperCase();
             } else {
                 return result.toLowerCase();
@@ -239,12 +237,9 @@ const generateStar = (data) => {
         },
     ]).then((response) => {
         const useColorSelector = response.useColorSelector;
-        console.log(useColorSelector);
         if(useColorSelector == true || useColorSelector == "Yes" || useColorSelector == "yes") {
-            console.log("GENERATE COMPLEX");
             generateStarComplex(data);
         } else {
-            console.log("GENERATE BASIC");
             generateStarBasic(data);
         };
     })

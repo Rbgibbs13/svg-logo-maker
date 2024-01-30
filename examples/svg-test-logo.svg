@@ -1,14 +1,27 @@
 <svg height="400" width="400" xmlns="http://www.w3.org/2000/svg" version="1.1">
-    <polygon points="200,5 395,395 5,395"/>
-    <text><tspan font-weight="bold" fill="green" x="100" y="280">GBG</tspan></text>
+    <defs>
+        <filter id="filterBack" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="8" dy="8" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+        <filter id="filterText" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="8" dy="8" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+    </defs>
+    <polygon points="200,5 80,395 395,150 5,150 320,395" filter="url(#filterBack)"/>
+    <text filter="url(#filterText)"><tspan font-weight="bold" fill="#FFC72C" x="140" y="240">GBG</tspan></text>
     <style>
         text {
-            font: 80px Verdana, Helvetica, Arial, sans-serif;
+            font: 50px Verdana, Helvetica, Arial, sans-serif;
         }
         polygon {
-            fill:#3386FF;
-            stroke:green;
-            stroke-width:5;
+            fill: #1D428A;
+            stroke: #FFC72C;
+            stroke-width: 5;
+            fill-rule: nonzero;
         }
     </style>
 </svg>
