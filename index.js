@@ -21,15 +21,31 @@ inquirer.prompt([
     },
     {
         name: "color",
-        type: "list",
-        message: "Select Logo Background Color",
-        choices: ["white", "black", "blue", "red", "green", "yellow", "purple", "transparent"],
+        type: "input",
+        message: "Background : Input Color (red, green, etc...) or Hex(#3386FF)",
+        default: "#3386FF",
+        filter: (result) => {
+            if(result[0] == "#") {
+                console.log(result.substring(0,7));
+                return result.substring(0,7).toUpperCase();
+            } else {
+                return result.toLowerCase();
+            }
+        }
     },
     {
         name: "borderColor",
-        type: "list",
-        message: "Select Border and Text Color",
-        choices: ["white", "black", "blue", "red", "green", "yellow", "purple"],
+        type: "input",
+        message: "Border and Text Color : Input Color (red, green, etc...) or Hex(#3386FF)",
+        default: "#3386FF",
+        filter: (result) => {
+            if(result[0] == "#") {
+                console.log(result.substring(0,7));
+                return result.substring(0,7).toUpperCase();
+            } else {
+                return result.toLowerCase();
+            }
+        }
     },
     {
         name: "strokeWidth",
