@@ -36,7 +36,7 @@ inquirer.prompt([
         name: "borderColor",
         type: "input",
         message: "Border and Text Color : Input Color (red, green, etc...) or Hex(#3386FF)",
-        default: "#1D428A",
+        default: "#FFC72C",
         filter: (result) => {
             if(result[0] == "#") {
                 return result.substring(0,7).toUpperCase();
@@ -173,7 +173,7 @@ const generateSquare = (data) => {
             name: "yOffset",
             type: "number",
             message: "Y Offset of Text (5/8 of HEIGHT to center)",
-            default: "10",
+            default: "250",
         },
         {
             name: "roundness",

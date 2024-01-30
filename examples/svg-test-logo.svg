@@ -12,14 +12,14 @@
         </filter>
     </defs>
     <polygon points="200,5 80,395 395,150 5,150 320,395" filter="url(#filterBack)"/>
-    <text filter="url(#filterText)"><tspan font-weight="bold" fill="#FFC72C" x="140" y="240">GBG</tspan></text>
+    <text filter="url(#filterText)"><tspan font-weight="bold" fill="#616161" x="140" y="240">GBG</tspan></text>
     <style>
         text {
             font: 50px Verdana, Helvetica, Arial, sans-serif;
         }
         polygon {
-            fill: #1D428A;
-            stroke: #FFC72C;
+            fill: #31F1F1;
+            stroke: #616161;
             stroke-width: 5;
             fill-rule: nonzero;
         }
