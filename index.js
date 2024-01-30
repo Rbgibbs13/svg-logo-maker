@@ -23,7 +23,7 @@ inquirer.prompt([
         name: "color",
         type: "input",
         message: "Background : Input Color (red, green, etc...) or Hex(#3386FF)",
-        default: "#3386FF",
+        default: "#1D428A",
         filter: (result) => {
             if(result[0] == "#") {
                 console.log(result.substring(0,7));
@@ -37,7 +37,7 @@ inquirer.prompt([
         name: "borderColor",
         type: "input",
         message: "Border and Text Color : Input Color (red, green, etc...) or Hex(#3386FF)",
-        default: "#3386FF",
+        default: "#1D428A",
         filter: (result) => {
             if(result[0] == "#") {
                 console.log(result.substring(0,7));
