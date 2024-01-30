@@ -1,0 +1,9 @@
+<svg height="200" width="400" xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <ellipse cx="200" cy="100" rx="190" ry="90" stroke="red" stroke-width="5"/>
+    <text><tspan font-weight="bold" fill="red" x="100" y="125">GBG</tspan></text>
+    <style>
+        text {
+            font: 80px Verdana, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</svg>

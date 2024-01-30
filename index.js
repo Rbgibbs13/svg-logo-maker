@@ -3,29 +3,15 @@ const Shape = require("./lib/shapes.js");
 const Save = require("./lib/save.js");
 let saveFileName = "";
 
-// async function titleFilter(title) {
-//     var done = this.async;
-//     setTimeout(function() {
-//         if(title.length >= 3) {
-//             title = title.substring(0,3).toUpperCase();
-//             console.warn("Filter Working");
-//             done("Max length reached");
-//             return;
-//         }
-//         console.warn("Filter Timed Out");
-//         done(null, true);
-//     }, 3000);
-    
-//     console.warn("Filter Working");
-// };
-
 inquirer.prompt([
     {
         name: "title",
         type: "input",
         message: "SVG Logo Text - 3 letter max",
-        //Add filter here
-        //filter: titleFilter(this.title),
+        filter: (result) => { 
+            if(result.length > 3) return result.substring(0,3).toUpperCase(); 
+            else return result.toUpperCase();
+        },
     },
     {
         name: "shape",
@@ -59,15 +45,10 @@ inquirer.prompt([
     }
 ]).then((response) => {
     //Get Inputs
-    let {title, shape, saveName} = response;
-    
-    //sanitize
-    title = title.substring(0,3).toUpperCase();
-    saveFileName = saveName + "-logo";
-    response.title = title;
+    saveFileName = response.saveName + "-logo";
 
     //Generate SVG shape
-    switch(shape) {
+    switch(response.shape) {
         case "Circle":
             generateCircle(response);
             break;
@@ -97,13 +78,6 @@ inquirer.prompt([
     }
 });
 
- //Save To File
-// const SaveSVGtoFile = (svg) => {
-//     fs.writeFile(`./examples/${saveFileName}.svg`, `${svg}`, (error) => 
-//         error ? console.error(error) : console.log("SVG Saved")
-//     );
-// };
-
 const generateRect = (data) => {
     //roundness : sizeX : sizeY 
     inquirer.prompt([
@@ -122,13 +96,13 @@ const generateRect = (data) => {
         {
             name: "xOffset",
             type: "number",
-            message: "X Offset of Text (X Margin for your logo)",
+            message: "X Offset of Text (1/4 of WIDTH to center)",
             default: "10",
         },
         {
             name: "yOffset",
             type: "number",
-            message: "Y Offset of Text (Y Margin for your logo)",
+            message: "Y Offset of Text (1/2 of HEIGHT to center)",
             default: "10",
         },
         {
@@ -141,7 +115,7 @@ const generateRect = (data) => {
         const {xSize, ySize, xOffset, yOffset, roundness} = response;
         const rectSVG = new Shape.Rectangle(xSize, ySize, xOffset, yOffset, roundness, data);
         const svg = rectSVG.convertToSVG();
-        Save.SaveSVGtoFile(saveFileName, svg);
+        Save(saveFileName, svg);
     });
 };
 
@@ -163,7 +137,7 @@ const generateTriangle = (data) => {
         const {xSize, ySize} = response;
         const triSVG = new Shape.Triangle(xSize, ySize, data);
         const svg = triSVG.convertToSVG();
-        Save.SaveSVGtoFile(saveFileName, svg);
+        Save(saveFileName, svg);
     });
 };
 
@@ -178,13 +152,13 @@ const generateSquare = (data) => {
         {
             name: "xOffset",
             type: "number",
-            message: "X Offset of Text (X Margin for your logo)",
+            message: "X Offset of Text",
             default: "10",
         },
         {
             name: "yOffset",
             type: "number",
-            message: "Y Offset of Text (Y Margin for your logo)",
+            message: "Y Offset of Text (5/8 of HEIGHT to center)",
             default: "10",
         },
         {
@@ -197,7 +171,7 @@ const generateSquare = (data) => {
         const {size, xOffset, yOffset, roundness} = response;
         const sqSVG = new Shape.Square(size, xOffset, yOffset, roundness, data);
         const svg = sqSVG.convertToSVG();
-        Save.SaveSVGtoFile(saveFileName, svg);
+        Save(saveFileName, svg);
     });
 };
 
@@ -219,7 +193,7 @@ const generateEllipse = (data) => {
         const {xSize, ySize} = response;
         const ellipseSVG = new Shape.Ellipse(xSize, ySize, data);
         const svg = ellipseSVG.convertToSVG();
-        Save.SaveSVGtoFile(saveFileName, svg);
+        Save(saveFileName, svg);
     });
 };
 
@@ -236,11 +210,31 @@ const generateCircle = (data) => {
         const radius = response.radius;
         const circleSVG = new Shape.Circle(radius, data);
         const svg = circleSVG.convertToSVG();
-        Save.SaveSVGtoFile(saveFileName, svg);
+        Save(saveFileName, svg);
     });
 };
 
 const generateStar = (data) => {
+    inquirer.prompt([
+        {
+            name: "useColorSelector",
+            type: "confirm",
+            message: "Use Complex Colors?",
+        },
+    ]).then((response) => {
+        const useColorSelector = response.useColorSelector;
+        console.log(useColorSelector);
+        if(useColorSelector == true || useColorSelector == "Yes" || useColorSelector == "yes") {
+            console.log("GENERATE COMPLEX");
+            generateStarComplex(data);
+        } else {
+            console.log("GENERATE BASIC");
+            generateStarBasic(data);
+        };
+    })
+};
+
+const generateStarBasic = (data) => {
     inquirer.prompt([
         {
             name: "xSize",
@@ -267,3 +261,138 @@ const generateStar = (data) => {
         Save(saveFileName, svg);
     });
 };
+
+const generateStarComplex = (data) => {
+    inquirer.prompt([
+        {
+            name: "xSize",
+            type: "number",
+            message: "Width of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "ySize",
+            type: "number",
+            message: "Height of SVG Logo",
+            default: "400",
+        },
+        {
+            name: "fillrule",
+            type: "list",
+            message: "Select fill type",
+            choices: ["nonzero", "evenodd"],
+        },
+        {
+            name: "backgroundRGB",
+            type: "input",
+            message: "Background RGB Value : Seperate with commas (r, g, b)",
+        },
+        {
+            name: "textRGB",
+            type: "input",
+            message: "Text/Border RGB Value : Seperate with comma (r, g, b)",
+        }
+    ]).then((response) => {
+        const {xSize, ySize, fillrule, textRGB, backgroundRGB} = response;
+        //split rgb at commas, if theres not 3 values try splitting at space
+        const bVals = backgroundRGB.split(",");
+        if(bVals.length < 3 || bVals.length > 3) bVals = backgroundRGB.split(" ");
+        const colorBuild = convertRGB(bVals[0], bVals[1], bVals[2]);
+        data.color = colorBuild;
+
+        const tVals = textRGB.split(",");
+        if(tVals.length < 3 || tVals.length > 3) tVals = textRGB.split(" ");
+        const textBuild = convertRGB(tVals[0], tVals[1], tVals[2]);
+        data.borderColor = textBuild;
+        
+        const starSVG = new Shape.Star(xSize, ySize, fillrule, data);
+        const svg = starSVG.convertToSVG();
+        Save(saveFileName, svg);
+    });
+};
+
+const convertRGB = (r, g, b) => {
+    let build = "#";
+    let redVal = returnHex(Math.floor(r/16));
+    let redRemain = returnHex((r % 16) * 16);
+    build += redVal + redRemain;
+
+    let greenVal = returnHex(Math.floor(g/16));
+    let greenRemain = returnHex((g % 16) * 16);
+    build += greenVal + greenRemain;
+
+    let blueVal = returnHex(Math.floor(b/16));
+    let blueRemain = returnHex((b % 16) * 16);
+    build += blueVal + blueRemain;
+    return build;
+};
+
+const returnHex = (value) => {
+    let hexValue;
+    switch(value) {
+        case 1:
+            hexValue = "1";
+            break;
+
+        case 2:
+            hexValue = "2";
+            break;
+
+        case 3:
+            hexValue = "3";
+            break;
+            
+        case 4:
+            hexValue = "4";
+            break;
+
+        case 5:
+            hexValue = "5";
+            break;
+
+        case 6:
+            hexValue = "6";
+            break;
+
+        case 7:
+            hexValue = "7";
+            break;
+
+        case 8:
+            hexValue = "8";
+            break;
+            
+        case 9:
+            hexValue = "9";
+            break;
+
+        case 10:
+            hexValue = "A";
+            break;
+
+        case 11:
+            hexValue = "B";
+            break;
+
+        case 12:
+            hexValue = "C";
+            break;
+
+        case 13:
+            hexValue = "D";
+            break;
+
+        case 14:
+            hexValue = "E";
+            break;
+
+        case 15:
+            hexValue = "F";
+            break;
+
+        default:
+            hexValue = "1";
+    }
+
+    return hexValue;
+}
